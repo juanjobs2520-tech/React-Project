@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // Asegúrate de importar useState
+import React from 'react';
 import { User } from '../../models/User';
 import UserFormValidator from '../../components/users/UserFormValidator';
 
@@ -10,11 +10,7 @@ import { useNavigate } from "react-router-dom";
 const App = () => {
     const navigate = useNavigate();
 
-    // Estado para almacenar el usuario a editar
-
-    // Lógica de creación
-    const handleCreateUser = async (user: User) => {
-
+    const handleCreateUser = async (user: Partial<User>) => {
         try {
             const createdUser = await userService.createUser(user);
             if (createdUser) {
@@ -23,24 +19,18 @@ const App = () => {
                     text: "Se ha creado correctamente el registro",
                     icon: "success",
                     timer: 3000
-                })
+                });
                 console.log("Usuario creado con éxito:", createdUser);
                 navigate("/users/list");
-            } else {
-                Swal.fire({
-                    title: "Error",
-                    text: "Existe un problema al momento de crear el registro",
-                    icon: "error",
-                    timer: 3000
-                })
             }
-        } catch (error) {
+        } catch (error: any) {
+            const message = error?.response?.data?.message || "Existe un problema al momento de crear el registro";
             Swal.fire({
                 title: "Error",
-                text: "Existe un problema al momento de crear el registro",
+                text: message,
                 icon: "error",
                 timer: 3000
-            })
+            });
         }
     };
     return (

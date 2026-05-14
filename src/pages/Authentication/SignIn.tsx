@@ -18,9 +18,10 @@ const SignIn: React.FC = () => {
       const response = await SecurityService.login(user);
       console.log('Usuario autenticado:', response);
       navigate("/users/list");
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al iniciar sesión', error);
-      setLoginError("No se pudo iniciar sesión. Verifica tus credenciales e intenta de nuevo.");
+      const message = error?.response?.data?.message || "No se pudo iniciar sesión. Verifica tus credenciales e intenta de nuevo.";
+      setLoginError(message);
     }
   };
 

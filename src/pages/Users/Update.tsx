@@ -18,7 +18,12 @@ const UpdateUserPage = () => {
             if (!id) return;
 
             const userData = await userService.getUserById(id);
-            setUser(userData);
+            if (userData) {
+                setUser({
+                    ...userData,
+                    ...userData.profile,
+                });
+            }
         };
 
         fetchUser();

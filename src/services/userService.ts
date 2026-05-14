@@ -24,24 +24,14 @@ class UserService {
         }
     }
 
-    async createUser(user: Omit<User, "id">): Promise<User | null> {
-        try {
-            const response = await apiClient.post<{ data?: User }>(`${API_URL}/`, user);
-            return response.data.data ?? (response.data as unknown as User);
-        } catch (error) {
-            console.error("Error al crear usuario:", error);
-            return null;
-        }
+    async createUser(user: Partial<User>): Promise<User | null> {
+        const response = await apiClient.post<{ data?: User }>(`${API_URL}/`, user);
+        return response.data.data ?? (response.data as unknown as User);
     }
 
     async updateUser(id: number, user: Partial<User>): Promise<User | null> {
-        try {
-            const response = await apiClient.put<{ data?: User }>(`${API_URL}/${id}`, user);
-            return response.data.data ?? (response.data as unknown as User);
-        } catch (error) {
-            console.error("Error al actualizar usuario:", error);
-            return null;
-        }
+        const response = await apiClient.put<{ data?: User }>(`${API_URL}/${id}`, user);
+        return response.data.data ?? (response.data as unknown as User);
     }
 
     async deleteUser(id: number): Promise<boolean> {
