@@ -1,13 +1,13 @@
-import axios from "axios";
+import { apiClient } from "./api";
 import { User } from "../models/User";
 
-const API_URL = import.meta.env.VITE_API_URL + "/users" || "";
+const API_URL = "/users";
 
 class UserService {
     async getUsers(): Promise<User[]> {
         try {
-            const response = await axios.get<User[]>(API_URL);
-            return response.data;
+            const response = await apiClient.get<{ data: User[] }>(API_URL);
+            return response.data.data;
         } catch (error) {
             console.error("Error al obtener usuarios:", error);
             return [];
@@ -46,7 +46,7 @@ class UserService {
 
     async deleteUser(id: number): Promise<boolean> {
         try {
-            await axios.delete(`${API_URL}/${id}`);
+            await apiClient.delete(`${API_URL}/${id}`);
             return true;
         } catch (error) {
             console.error("Error al eliminar usuario:", error);

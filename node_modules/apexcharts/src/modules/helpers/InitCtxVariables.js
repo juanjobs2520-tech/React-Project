@@ -8,6 +8,7 @@ import Crosshairs from '../Crosshairs'
 import Grid from '../axes/Grid'
 import Graphics from '../Graphics'
 import Exports from '../Exports'
+import Fill from '../Fill.js'
 import Options from '../settings/Options'
 import Responsive from '../Responsive'
 import Series from '../Series'
@@ -23,12 +24,16 @@ import Core from '../Core'
 import Data from '../Data'
 import UpdateHelpers from './UpdateHelpers'
 
-import '../../svgjs/svg.js'
-import 'svg.filter.js'
-import 'svg.pathmorphing.js'
-import 'svg.draggable.js'
-import 'svg.select.js'
-import 'svg.resize.js'
+import { SVG } from '@svgdotjs/svg.js'
+import '../../svgjs/svg.pathmorphing.js'
+import '@svgdotjs/svg.filter.js'
+import '@svgdotjs/svg.draggable.js'
+import '@svgdotjs/svg.select.js'
+import '@svgdotjs/svg.resize.js'
+
+if (typeof window.SVG === 'undefined') {
+  window.SVG = SVG
+}
 
 // global Apex object which user can use to override chart's defaults globally
 if (typeof window.Apex === 'undefined') {
@@ -47,6 +52,8 @@ export default class InitCtxVariables {
       'updateSeries',
       'appendData',
       'appendSeries',
+      'isSeriesHidden',
+      'highlightSeries',
       'toggleSeries',
       'showSeries',
       'hideSeries',
@@ -62,7 +69,7 @@ export default class InitCtxVariables {
       'clearAnnotations',
       'removeAnnotation',
       'paper',
-      'destroy'
+      'destroy',
     ]
 
     this.ctx.eventList = [
@@ -74,7 +81,7 @@ export default class InitCtxVariables {
       'touchmove',
       'touchleave',
       'mouseup',
-      'touchend'
+      'touchend',
     ]
 
     this.ctx.animations = new Animations(this.ctx)
@@ -88,6 +95,7 @@ export default class InitCtxVariables {
     this.ctx.crosshairs = new Crosshairs(this.ctx)
     this.ctx.events = new Events(this.ctx)
     this.ctx.exports = new Exports(this.ctx)
+    this.ctx.fill = new Fill(this.ctx)
     this.ctx.localization = new Localization(this.ctx)
     this.ctx.options = new Options()
     this.ctx.responsive = new Responsive(this.ctx)

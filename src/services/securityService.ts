@@ -10,7 +10,6 @@ class SecurityService extends EventTarget {
     private readonly userKey: string;
     private readonly API_URL: string;
     private user: User | null;
-    private theAuthProvider: any;
     private storage: StorageProvider;
 
     constructor(storage: StorageProvider = new LocalStorageProvider()) {
@@ -19,7 +18,7 @@ class SecurityService extends EventTarget {
         this.storage = storage;
         this.keyToken = "token";
         this.userKey = "user";
-        this.API_URL = import.meta.env.VITE_API_URL_SECURITY || "";
+        this.API_URL = import.meta.env.VITE_API_URL_SECURITY || "http://localhost:5000/api/auth";
         this.user = this.loadStoredUser();
     }
 
@@ -50,16 +49,17 @@ class SecurityService extends EventTarget {
             throw new Error(`Login failed with status ${response.status}`);
         }
 
-        const data = response.data;
+        const payload = response.data?.data ?? response.data;
+        const authUser = payload?.user ?? payload;
+        const accessToken = payload?.access_token ?? payload?.token;
 
-        this.user = data.user;
-
-        // Ajusta esto según la estructura real de la respuesta
-        this.storage.setItem(this.userKey, JSON.stringify(this.user));
-
-        if (data?.token) {
-            this.storage.setItem(this.keyToken, data.token);
+        if (!authUser || !accessToken) {
+            throw new Error("Invalid authentication response");
         }
+
+        this.user = authUser;
+        this.storage.setItem(this.userKey, JSON.stringify(this.user));
+        this.storage.setItem(this.keyToken, accessToken);
 
         store.dispatch(setUser(this.user));
         this.dispatchEvent(new CustomEvent("userChange", { detail: this.user }));
