@@ -11,6 +11,7 @@ interface MyFormProps {
 const UserFormValidator: React.FC<MyFormProps> = ({ mode, handleAction, user }) => {
     return (
         <Formik
+            enableReinitialize
             initialValues={
                 user
                     ? {
