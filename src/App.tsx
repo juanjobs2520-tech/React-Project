@@ -1,16 +1,35 @@
+import { Suspense } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import DefaultLayout from './layout/DefaultLayout';
+import ProtectedRoute from './components/Auth/ProtectedRoute';
+import SignIn from './pages/Authentication/SignIn';
+import SignUp from './pages/Authentication/SignUp';
+import routes from './routes';
+
 const App = () => {
   return (
-    <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center px-4">
-      <div className="max-w-xl rounded-3xl border border-white/10 bg-slate-800/90 p-10 text-center shadow-2xl shadow-black/20">
-        <h1 className="text-4xl font-bold tracking-tight text-cyan-300">
-          ¡Todo marcha bien!
-        </h1>
-        <p className="mt-4 text-lg text-slate-200">
-          Esta es la página de prueba. Si ves este mensaje, la aplicación se está ejecutando correctamente.
-        </p>
-      </div>
-    </div>
-  )
-}
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Cargando...</div>}>
+      <Routes>
+        <Route path="/auth/signin" element={<SignIn />} />
+        <Route path="/auth/signup" element={<SignUp />} />
+
+        <Route element={<DefaultLayout />}>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Navigate to="/users/list" replace />} />
+            {routes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={<route.component />}
+              />
+            ))}
+          </Route>
+        </Route>
+
+        <Route path="*" element={<Navigate to="/auth/signin" replace />} />
+      </Routes>
+    </Suspense>
+  );
+};
 
 export default App;

@@ -1,4 +1,4 @@
-import axios from "axios";
+import { authClient } from "./api";
 import { User } from "../models/User";
 import { StorageProvider } from "../storage/StorageProvider";
 import { LocalStorageProvider } from "../storage/LocalStorageProvider";
@@ -39,12 +39,7 @@ class SecurityService extends EventTarget {
     }
 
     async login(user: User) {
-        console.log("llamando api " + `${this.API_URL}/login`);
-        const response = await axios.post(`${this.API_URL}/login`, user, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        const response = await authClient.post("/login", user);
         if (response.status !== 200) {
             throw new Error(`Login failed with status ${response.status}`);
         }

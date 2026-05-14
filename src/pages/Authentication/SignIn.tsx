@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useState } from "react";
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -11,16 +10,20 @@ import { useNavigate } from "react-router-dom";
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
+  const [loginError, setLoginError] = useState<string | null>(null);
+
   const handleLogin = async (user: User) => {
-    console.log("aqui " + JSON.stringify(user))
+    setLoginError(null);
     try {
       const response = await SecurityService.login(user);
       console.log('Usuario autenticado:', response);
-      navigate("/");
+      navigate("/users/list");
     } catch (error) {
       console.error('Error al iniciar sesión', error);
+      setLoginError("No se pudo iniciar sesión. Verifica tus credenciales e intenta de nuevo.");
     }
-  }
+  };
+
   return (
     <>
       <Breadcrumb pageName="Sign In" />
@@ -221,6 +224,11 @@ const SignIn: React.FC = () => {
                     >
                       Login
                     </button>
+                    {loginError && (
+                      <div className="text-sm text-red-600 pt-2">
+                        {loginError}
+                      </div>
+                    )}
                     <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
                       <span>
                         <svg

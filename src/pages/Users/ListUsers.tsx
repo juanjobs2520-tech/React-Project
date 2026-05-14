@@ -3,21 +3,33 @@ import { User } from "../../models/User";
 import GenericTable from "../../components/GenericTable";
 import { userService } from "../../services/userService";
 import Swal from "sweetalert2";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Breadcrumb from "../../components/Breadcrumb";
 
 const Users: React.FC = () => {
     const navigate = useNavigate();
     const [data, setData] = useState<User[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // 🔹 Llamar `fetchData` cuando el componente se monta
     useEffect(() => {
         fetchData();
     }, []);
 
-    // 🔹 Obtiene los datos de los usuarios
     const fetchData = async () => {
-        const users = await userService.getUsers();
-        setData(users);
+        setLoading(true);
+        setError(null);
+
+        try {
+            const users = await userService.getUsers();
+            setData(users);
+        } catch (fetchError) {
+            console.error("Error fetching users:", fetchError);
+            setError("No se pudieron cargar los usuarios. Intenta de nuevo más tarde.");
+            setData([]);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleAction = (action: string, item: User) => {
@@ -64,30 +76,46 @@ const Users: React.FC = () => {
     }
 
     const handleCreate = () => {
-        console.log("Create user");
         navigate("/users/create");
     };
 
-
     return (
         <div>
-            <h2>User List</h2>
-            <button
-                onClick={handleCreate}
-                className="inline-flex items-center justify-center bg-primary py-2 px-4 text-sm font-medium text-white rounded-md hover:bg-opacity-90 transition"
-            >
-                Crear
-            </button>
+            <Breadcrumb pageName="Lista de Usuarios" />
 
-            <GenericTable
-                data={data}
-                columns={["id", "name", "email"]}
-                actions={[
-                    { name: "edit", label: "Edit" },
-                    { name: "delete", label: "Delete" },
-                ]}
-                onAction={handleAction}
-            />
+            <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <h2 className="text-xl font-semibold text-black dark:text-white">Usuarios</h2>
+                <button
+                    onClick={handleCreate}
+                    className="inline-flex items-center justify-center bg-primary py-2 px-4 text-sm font-medium text-white rounded-md hover:bg-opacity-90 transition"
+                >
+                    Crear usuario
+                </button>
+            </div>
+
+            {loading ? (
+                <div className="rounded-sm border border-stroke bg-white p-6 text-center text-sm text-gray-600 dark:bg-boxdark dark:text-white">
+                    Cargando usuarios...
+                </div>
+            ) : error ? (
+                <div className="rounded-sm border border-red-300 bg-red-50 p-6 text-center text-sm text-red-700 dark:bg-red-200 dark:text-red-900">
+                    {error}
+                </div>
+            ) : data.length === 0 ? (
+                <div className="rounded-sm border border-stroke bg-white p-6 text-center text-sm text-gray-600 dark:bg-boxdark dark:text-white">
+                    No se encontraron usuarios.
+                </div>
+            ) : (
+                <GenericTable
+                    data={data}
+                    columns={["id", "name", "email"]}
+                    actions={[
+                        { name: "edit", label: "Editar" },
+                        { name: "delete", label: "Eliminar" },
+                    ]}
+                    onAction={handleAction}
+                />
+            )}
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
-import dataJSON from '../../public/data.json';
 
+const dataJSON: Record<string, any> = {};
 
 const createToast=(title: string, msg: string, type: number)=>{toast.custom((t) => (
   
