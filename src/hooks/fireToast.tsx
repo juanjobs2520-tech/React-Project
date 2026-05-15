@@ -1,5 +1,4 @@
 import toast from 'react-hot-toast';
-import dataJSON from '../../public/data.json';
 
 
 const createToast=(title: string, msg: string, type: number)=>{toast.custom((t) => (
@@ -8,7 +7,7 @@ const createToast=(title: string, msg: string, type: number)=>{toast.custom((t) 
       className={`${
         t.visible ? 'animate-enter' : 'animate-leave'
       }
-      max-w-md w-full ${type=='0'?"bg-[#04b20c]":type=='1'?"bg-[#eab90f]":"bg-[#e13f32]"} shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+      max-w-md w-full ${type===0?"bg-[#04b20c]":type===1?"bg-[#eab90f]":"bg-[#e13f32]"} shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
     >
       <div className="flex-1 w-0 p-4 ">
         <div className="flex items-start">
@@ -64,49 +63,48 @@ const createToast=(title: string, msg: string, type: number)=>{toast.custom((t) 
 //     console.log(data);
 //     dataJSON=data;
 //   })
-const fireToast = () => {
-const alertSettings=localStorage.getItem("alertSettings");
-if (alertSettings){
-  for (const alertSetting of JSON.parse(alertSettings)) {
-    console.log(alertSetting);
+const fireToast = async () => {
+  const dataJSON = await fetch('/data.json')
+    .then((r) => r.json())
+    .catch(() => ({}));
 
-    const value=isNaN(parseFloat(alertSetting.value))?alertSetting.value:parseFloat(alertSetting.value);
-    const para=alertSetting.criterion<2?"delta_"+alertSetting.para:alertSetting.para;
-    if (alertSetting.id=="ALL"){
-      Object.keys(dataJSON).map((id:string)=>
-      {
-        const condition=alertSetting.criterion=='0'?value<=-1*dataJSON[id][para]:
-        alertSetting.criterion=='1'||alertSetting.criterion=='3'?value>=dataJSON[id][para]:
-        alertSetting.criterion=='2'?value<=dataJSON[id][para]:
-        value==dataJSON[id][para];
-        const realValue=alertSetting.criterion=='0'?dataJSON[id][para]*-1:dataJSON[id][para];
-        if (condition){
-          const msg=`${alertSetting.para} of ${id} ${alertSetting.criterion==0?"goes down by":alertSetting.criterion==1?"goes up by":alertSetting.criterion==2?"is smaller than":alertSetting.criterion==3?"is greater than":"is equal to"} ${realValue}`;
-          createToast(id,msg,alertSetting.type)
-        }
-    
-
+  const alertSettings = localStorage.getItem("alertSettings");
+  if (alertSettings) {
+    for (const alertSetting of JSON.parse(alertSettings)) {
+      console.log(alertSetting);
+      // ensure `value` is defined (comes from alertSetting.value)
+      const value = Number(alertSetting.value ?? 0);
+      const toastType = Number(alertSetting.type ?? 0);
+      if (alertSetting.id=="ALL"){
+        Object.keys(dataJSON).map((id:string)=>
+        {
+          const condition=alertSetting.criterion=='0'?value<=-1*dataJSON[id][alertSetting.para]:
+          alertSetting.criterion=='1'||alertSetting.criterion=='3'?value>=dataJSON[id][alertSetting.para]:
+          alertSetting.criterion=='2'?value<=dataJSON[id][alertSetting.para]:
+          value==dataJSON[id][alertSetting.para];
+          const realValue=alertSetting.criterion=='0'?dataJSON[id][alertSetting.para]*-1:dataJSON[id][alertSetting.para];
+          if (condition){
+            const msg=`${alertSetting.para} of ${id} ${alertSetting.criterion==0?"goes down by":alertSetting.criterion==1?"goes up by":alertSetting.criterion==2?"is smaller than":alertSetting.criterion==3?"is greater than":"is equal to"} ${realValue}`;
+            createToast(id,msg,toastType)
+          }
+        });
       }
-
-      );
-    }
-    else{
-      const id=alertSetting.id;
-      
-      const condition=alertSetting.criterion=='0'?value>=-1*dataJSON[id][para]:
-        alertSetting.criterion=='1'||alertSetting.criterion=='3'?value>=dataJSON[id][para]:
-        alertSetting.criterion=='2'?value<=dataJSON[id][para]:
-        value==dataJSON[id][para];
-        const realValue=alertSetting.criterion=='0'?dataJSON[id][para]*-1:dataJSON[id][para];
+      else{
+        const id=alertSetting.id;
         
-        if (condition){
-          const msg=`${alertSetting.para} of ${id} ${alertSetting.criterion==0?"goes down by":alertSetting.criterion==1?"goes up by":alertSetting.criterion==2?"is smaller than":alertSetting.criterion==3?"is greater than":"is equal to"} ${realValue}`;
-          createToast(id,msg,alertSetting.type)
+        const condition=alertSetting.criterion=='0'?value>=-1*dataJSON[id][alertSetting.para]:
+          alertSetting.criterion=='1'||alertSetting.criterion=='3'?value>=dataJSON[id][alertSetting.para]:
+          alertSetting.criterion=='2'?value<=dataJSON[id][alertSetting.para]:
+          value==dataJSON[id][alertSetting.para];
+          const realValue=alertSetting.criterion=='0'?dataJSON[id][alertSetting.para]*-1:dataJSON[id][alertSetting.para];
+          
+          if (condition){
+            const msg=`${alertSetting.para} of ${id} ${alertSetting.criterion==0?"goes down by":alertSetting.criterion==1?"goes up by":alertSetting.criterion==2?"is smaller than":alertSetting.criterion==3?"is greater than":"is equal to"} ${realValue}`;
+            createToast(id,msg,toastType)
+          }
         }
       }
-  };
   }
-}
 
-export default fireToast;
   
+}
