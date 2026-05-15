@@ -109,3 +109,5 @@ const fireToast = async () => {
 
   
 }
+
+export default fireToast;
