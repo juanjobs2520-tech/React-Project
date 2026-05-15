@@ -38,8 +38,16 @@ class SecurityService extends EventTarget {
         }
     }
 
+    private normalizeEmail(user: User): User {
+        return {
+            ...user,
+            email: user.email?.trim().toLowerCase() ?? user.email,
+        };
+    }
+
     async login(user: User) {
-        const response = await authClient.post("/login", user);
+        const normalizedUser = this.normalizeEmail(user);
+        const response = await authClient.post("/login", normalizedUser);
         if (response.status !== 200) {
             throw new Error(`Login failed with status ${response.status}`);
         }

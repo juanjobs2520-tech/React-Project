@@ -197,7 +197,10 @@ const SignIn: React.FC = () => {
                   password: Yup.string().required("La contraseña es obligatoria"),
                 })}
                 onSubmit={(values) => {
-                  const formattedValues = { ...values };  // Formateo adicional si es necesario
+                  const formattedValues = {
+                    ...values,
+                    email: values.email.trim().toLowerCase(),
+                  };
                   handleLogin(formattedValues);
                 }}
 
