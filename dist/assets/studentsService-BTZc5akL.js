@@ -1,0 +1,1 @@
+import{n as s}from"./index-BtGP6P8n.js";const n=e=>e&&typeof e=="object"&&"data"in e?e.data:e;class a{async list(){const t=await s.get("/academic/students");return n(t.data)??[]}async search(t){const r=await s.get("/academic/students/search",{params:t});return n(r.data)??[]}}const i=new a;export{i as s};

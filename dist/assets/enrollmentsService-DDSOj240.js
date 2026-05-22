@@ -1,0 +1,1 @@
+import{n as r}from"./index-BtGP6P8n.js";const s=e=>e&&typeof e=="object"&&"data"in e?e.data:e;class c{async list(){const n=await r.get("/academic/enrollments");return s(n.data)??[]}async create(n){const t=await r.post("/academic/enrollments",n);return s(t.data)}async update(n,t){const a=await r.put(`/academic/enrollments/${n}`,t);return s(a.data)}}const i=new c;export{i as e};

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
+import EduGestSidebar from '../components/layout/EduGestSidebar';
 import { Outlet } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
@@ -13,7 +13,7 @@ const DefaultLayout = () => {
         {/* <!-- ===== Page Wrapper Start ===== --> */}
         <div className="flex h-screen overflow-hidden">
           {/* <!-- ===== Sidebar Start ===== --> */}
-          <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <EduGestSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           {/* <!-- ===== Sidebar End ===== --> */}
 
           {/* <!-- ===== Content Area Start ===== --> */}

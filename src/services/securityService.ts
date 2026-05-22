@@ -68,12 +68,10 @@ class SecurityService extends EventTarget {
 
     logout() {
         this.user = null;
-
         this.storage.removeItem(this.userKey);
         this.storage.removeItem(this.keyToken);
-
-        this.dispatchEvent(new CustomEvent("userChange", { detail: null }));
         store.dispatch(setUser(null));
+        this.dispatchEvent(new CustomEvent("userChange", { detail: null }));
     }
 
     isAuthenticated() {

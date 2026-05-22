@@ -1,0 +1,1 @@
+const a=(r,s,e)=>{const t=(s-1)*e;return r.slice(t,t+e)},c=(r,s,e)=>{const t=s.trim().toLowerCase();return t?r.filter(n=>e.some(o=>String(n[o]??"").toLowerCase().includes(t))):r};export{c as f,a as p};
