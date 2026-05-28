@@ -9,6 +9,7 @@ import {
   FiGrid,
   FiLayers,
   FiList,
+  FiPackage,
   FiUserCheck,
   FiUsers,
 } from 'react-icons/fi';
@@ -80,6 +81,9 @@ const EduGestSidebar = ({ sidebarOpen, setSidebarOpen }: EduGestSidebarProps) =>
             </NavLink>
 
             <p className="edugest-sidebar-section">Operaciones</p>
+            <NavLink to="/grupos/gestion" className={linkClass}>
+              <FiPackage /> Gestionar grupos
+            </NavLink>
             <NavLink to="/grupos/asignar-docente" className={linkClass}>
               <FiUserCheck /> Asignar docente
             </NavLink>

@@ -5,6 +5,7 @@ const CarrerasSemestresPage = lazy(() => import('../pages/academico/CarrerasSeme
 const AsignaturasPage = lazy(() => import('../pages/academico/AsignaturasPage'));
 const PlanEstudiosPage = lazy(() => import('../pages/academico/PlanEstudiosPage'));
 const AsignarDocentePage = lazy(() => import('../pages/grupos/AsignarDocentePage'));
+const GestionGruposPage = lazy(() => import('../pages/grupos/GestionGruposPage'));
 const MatricularEstudiantePage = lazy(() => import('../pages/matriculas/MatricularEstudiantePage'));
 const InscribirEstudiantePage = lazy(() => import('../pages/inscripciones/InscribirEstudiantePage'));
 
@@ -23,6 +24,7 @@ export const edugestRoutes = [
   { path: '/academico/carreras', title: 'Carreras y semestres', component: CarrerasSemestresPage },
   { path: '/academico/asignaturas', title: 'Asignaturas', component: AsignaturasPage },
   { path: '/academico/plan-estudios', title: 'Plan de estudios', component: PlanEstudiosPage },
+  { path: '/grupos/gestion', title: 'Gestionar grupos', component: GestionGruposPage },
   { path: '/grupos/asignar-docente', title: 'Asignar docente', component: AsignarDocentePage },
   { path: '/matriculas/matricular', title: 'Matricular estudiante', component: MatricularEstudiantePage },
   { path: '/inscripciones/inscribir', title: 'Inscribir estudiante', component: InscribirEstudiantePage },
